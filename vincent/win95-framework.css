@@ -1,0 +1,541 @@
+/* ==========================================================================
+   WINDOWS 95 RETRO UI FRAMEWORK
+   ========================================================================== */
+
+:root {
+    --win95-bg: #c0c0c0;
+    --win95-dark: #808080;
+    --win95-darker: #404040;
+    --win95-white: #ffffff;
+    --win95-black: #000000;
+    --win95-teal: #008080;
+    --win95-blue: #000080;
+    --win95-green: #008000;
+    --folly-red: #ff004f;
+    --not-folly-red: #c90065;
+
+    --raised: inset -1px -1px 0 #404040, inset 1px 1px 0 #ffffff, inset -2px -2px 0 #808080, inset 2px 2px 0 #dfdfdf;
+    --sunken: inset 1px 1px 0 #404040, inset -1px -1px 0 #ffffff, inset 2px 2px 0 #808080, inset -2px -2px 0 #dfdfdf;
+    --button-raised: inset -1px -1px 0 #000000, inset 1px 1px 0 #ffffff, inset -2px -2px 0 #808080, inset 2px 2px 0 #dfdfdf;
+    --button-pressed: inset 1px 1px 0 #000000, inset -1px -1px 0 #ffffff, inset 2px 2px 0 #808080, inset -2px -2px 0 #dfdfdf;
+}
+
+/* ==========================================================================
+   RESET & SYSTEM FONTS
+   ========================================================================== */
+* {
+    box-sizing: border-box;
+    margin: 0;
+    padding: 0;
+}
+
+body {
+    background-color: var(--folly-red);
+    font-family: 'MS Sans Serif', 'Microsoft Sans Serif', Arial, sans-serif;
+    font-size: 11px;
+    color: var(--win95-black);
+}
+
+/* Retro Webkit Scrollbar */
+::-webkit-scrollbar {
+    width: 16px;
+    height: 16px;
+    background: repeating-linear-gradient(45deg, #c0c0c0, #c0c0c0 2px, #dfdfdf 2px, #dfdfdf 4px);
+}
+::-webkit-scrollbar-thumb {
+    background: var(--win95-bg);
+    box-shadow: var(--button-raised);
+}
+::-webkit-scrollbar-button {
+    background: var(--win95-bg);
+    box-shadow: var(--button-raised);
+    display: block;
+    height: 16px;
+    width: 16px;
+}
+
+/* ==========================================================================
+   DESKTOP & ICONS
+   ========================================================================== */
+#desktop {
+    position: relative;
+    width: 100vw;
+    height: 100vh;
+    overflow: hidden;
+    padding: 16px;
+}
+
+.desk-icon {
+    position: absolute;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 4px;
+    width: 76px;
+    padding: 6px;
+    cursor: pointer;
+    z-index: 10;
+}
+
+.desk-icon .icon-img {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 32px;
+}
+
+.desk-icon .icon-label {
+    font-size: 11px;
+    color: white;
+    text-shadow: 1px 1px 2px #000;
+    text-align: center;
+    line-height: 1.2;
+    padding: 2px 4px;
+    border: 1px solid transparent;
+}
+
+.desk-icon.selected .icon-img {
+    filter: brightness(0.55) sepia(1) hue-rotate(190deg) saturate(4);
+}
+
+.desk-icon.selected .icon-label {
+    background: var(--win95-blue);
+    border: 1px dotted rgba(255, 255, 255, 0.8);
+    text-shadow: none;
+}
+
+/* ==========================================================================
+   WINDOW CONTAINER
+   ========================================================================== */
+.win95-window {
+    position: absolute;
+    background: var(--win95-bg);
+    box-shadow: var(--raised);
+    border: 2px solid var(--win95-darker);
+    display: flex;
+    flex-direction: column;
+    min-width: 50px;
+}
+
+.win-titlebar {
+    background: linear-gradient(to right, #C90065, #FF004F);
+    padding: 3px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+    cursor: default;
+}
+
+.win-titlebar-left {
+    display: flex;
+    align-items: center;
+    gap: 4px;
+}
+
+.win-titlebar-icon {
+    width: 16px;
+    height: 16px;
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 1px;
+    flex-shrink: 0;
+}
+
+.win-titlebar-icon span {
+    display: block;
+}
+
+.win-titlebar-icon span:nth-child(1) { background: #ff6666; }
+.win-titlebar-icon span:nth-child(2) { background: #66ff66; }
+.win-titlebar-icon span:nth-child(3) { background: #6666ff; }
+.win-titlebar-icon span:nth-child(4) { background: #ffff66; }
+
+.win-title {
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+    letter-spacing: 0.3px;
+}
+
+.win-controls {
+    display: flex;
+    gap: 2px;
+}
+
+.win-ctrl-btn {
+    width: 16px;
+    height: 14px;
+    background: var(--win95-bg);
+    box-shadow: var(--button-raised);
+    border: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    font-size: 9px;
+    font-weight: bold;
+    color: var(--win95-black);
+    font-family: inherit;
+    padding: 0;
+    line-height: 1;
+    outline: none;
+}
+
+.win-ctrl-btn:active {
+    box-shadow: var(--button-pressed);
+}
+
+.win-body {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+}
+
+/* ==========================================================================
+   WINDOW MENUBAR & DROPDOWNS
+   ========================================================================== */
+.win-menubar {
+    background: var(--win95-bg);
+    border-bottom: 1px solid var(--win95-dark);
+    padding: 2px 0;
+    display: flex;
+    flex-shrink: 0;
+    position: relative;
+    z-index: 1000;
+}
+
+.win-menu-trigger {
+    padding: 2px 8px;
+    font-size: 11px;
+    color: var(--win95-black);
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.win-menu-trigger:hover,
+.win-menu-trigger.open {
+    background: var(--win95-blue);
+    color: white;
+}
+
+.win-dropdown {
+    display: none;
+    position: absolute;
+    top: 100%;
+    background: var(--win95-bg);
+    box-shadow: var(--raised);
+    border: 1px solid var(--win95-darker);
+    z-index: 10000;
+    min-width: 180px;
+}
+
+.win-dropdown.show {
+    display: block;
+}
+
+.win-dd-item {
+    padding: 4px 24px 4px 16px;
+    font-size: 11px;
+    cursor: pointer;
+    white-space: nowrap;
+    color: var(--win95-black);
+}
+
+.win-dd-item:hover {
+    background: var(--win95-blue);
+    color: white;
+}
+
+.win-dd-sep {
+    border-top: 1px solid var(--win95-dark);
+    border-bottom: 1px solid white;
+    margin: 2px 0;
+}
+
+/* ==========================================================================
+   WINDOW STATUSBAR
+   ========================================================================== */
+.win-statusbar {
+    background: var(--win95-bg);
+    border-top: 1px solid var(--win95-dark);
+    padding: 2px 4px;
+    display: flex;
+    gap: 4px;
+    font-size: 10px;
+    flex-shrink: 0;
+    color: var(--win95-black);
+}
+
+.sbar-pane {
+    box-shadow: var(--sunken);
+    padding: 2px 6px;
+    flex: 1;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.sbar-pane.narrow {
+    flex: 0 0 auto;
+    min-width: 80px;
+}
+
+/* ==========================================================================
+   FORM CONTROLS & UTILITIES
+   ========================================================================== */
+.win95-btn {
+    background: var(--win95-bg);
+    box-shadow: var(--button-raised);
+    border: none;
+    padding: 4px 14px;
+    font-family: inherit;
+    font-size: 11px;
+    color: var(--win95-black);
+    cursor: pointer;
+    min-width: 60px;
+    outline: none;
+}
+
+.win95-btn:hover {
+    background: #d0d0d0;
+}
+
+.win95-btn:active {
+    box-shadow: var(--button-pressed);
+    padding: 5px 13px 3px 15px;
+}
+
+.win95-select {
+    background: white;
+    border: none;
+    box-shadow: var(--sunken);
+    padding: 2px 18px 2px 4px;
+    font-family: inherit;
+    font-size: 11px;
+    color: var(--win95-black);
+    height: 22px;
+    cursor: pointer;
+    appearance: none;
+    -webkit-appearance: none;
+    background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6'%3E%3Cpath d='M0 0l5 6 5-6z' fill='%23000'/%3E%3C/svg%3E");
+    background-repeat: no-repeat;
+    background-position: right 4px center;
+    outline: none;
+}
+
+.win95-input {
+    background: white;
+    border: 2px solid;
+    border-top-color: #808080;
+    border-left-color: #808080;
+    border-bottom-color: #dfdfdf;
+    border-right-color: #dfdfdf;
+    padding: 2px 4px;
+    font-family: inherit;
+    font-size: 11px;
+    outline: none;
+}
+
+.win95-input:focus {
+    outline: 1px dotted #000;
+    outline-offset: -1px;
+}
+
+/* ==========================================================================
+   DIALOG BOXES (Modal System)
+   ========================================================================== */
+.win95-dialog-overlay {
+    display: none;
+    position: fixed;
+    top: 0;
+    left: 0;
+    width: 100vw;
+    height: 100vh;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.1);
+    z-index: 99999;
+}
+
+.win95-dialog-overlay.show {
+    display: flex;
+}
+
+.dlg-box {
+    background: var(--win95-bg);
+    box-shadow: var(--raised);
+    border: 2px solid var(--win95-darker);
+    min-width: 260px;
+    max-width: 380px;
+    display: flex;
+    flex-direction: column;
+}
+
+.dlg-titlebar {
+    background: linear-gradient(to right, #000080, #1084d0);
+    padding: 3px 4px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 4px;
+}
+
+.dlg-title {
+    color: white;
+    font-size: 12px;
+    font-weight: bold;
+}
+
+.dlg-body {
+    padding: 14px 14px 8px;
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    color: var(--win95-black);
+}
+
+.dlg-icon {
+    font-size: 26px;
+    flex-shrink: 0;
+}
+
+.dlg-text {
+    font-size: 11px;
+    line-height: 1.5;
+}
+
+.dlg-btns {
+    padding: 6px 14px 12px;
+    display: flex;
+    justify-content: center;
+    gap: 8px;
+}
+
+.dlg-btn {
+    background: var(--win95-bg);
+    box-shadow: var(--button-raised);
+    border: none;
+    padding: 4px 18px;
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    min-width: 70px;
+    outline: none;
+}
+
+.dlg-btn:active {
+    box-shadow: var(--button-pressed);
+}
+
+/* ==========================================================================
+   TAB COMPONENT
+   ========================================================================== */
+.win95-tabs {
+    display: flex;
+    gap: 2px;
+    position: relative;
+    z-index: 3;
+}
+
+.tab-btn {
+    background: var(--win95-bg);
+    border: 2px solid;
+    border-top-color: #dfdfdf;
+    border-left-color: #dfdfdf;
+    border-bottom-color: #808080;
+    border-right-color: #808080;
+    padding: 4px 8px;
+    font-family: inherit;
+    font-size: 11px;
+    cursor: pointer;
+    position: relative;
+    top: 0;
+    outline: none;
+    border-bottom: none;
+    margin-bottom: -2px;
+    z-index: 1;
+}
+
+.tab-btn.active {
+    background: white;
+    border-top-color: #fff;
+    border-left-color: #fff;
+    z-index: 4;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    top: -2px;
+    font-weight: bold;
+    border-bottom: 2px solid white;
+}
+
+.tab-btn:focus {
+    outline: 1px dotted #000;
+    outline-offset: -3px;
+}
+
+.tab-content-box {
+    border: 2px solid;
+    border-top-color: #dfdfdf;
+    border-left-color: #dfdfdf;
+    border-bottom-color: #808080;
+    border-right-color: #808080;
+    padding: 12px;
+    margin-top: -2px;
+    z-index: 2;
+    position: relative;
+    background: var(--win95-bg);
+}
+
+/* ==========================================================================
+    Some other thing
+    ========================================================================== */
+#player .p-row { display: flex; align-items: center; gap: 4px; margin: 4px 5px 0; }
+#player .p-row.small { margin-top: 3px; gap: 3px; }
+
+#player .p-play { width: 30px; height: 22px; min-width: 0; padding: 0; flex: none; }
+#player .p-play svg { display: block; fill: #000; pointer-events: none; }
+#player .p-play:active svg { transform: translate(1px, 1px); }
+
+#player .p-time { flex: none; width: 84px; height: 18px; padding: 2px 4px; font-size: 10px; line-height: 14px; }
+#player .p-vol { font-size: 10px; flex: none; }
+
+/* Win95 sliders */
+#player .p-range { -webkit-appearance: none; appearance: none; background: transparent; height: 22px; margin: 0; padding: 0; flex: 1; min-width: 0; }
+#player .p-range:focus { outline: none; }
+#player .p-range:disabled { opacity: 0.6; }
+#player .p-range::-webkit-slider-runnable-track {
+    height: 4px; box-sizing: border-box; border: 1px solid;
+    border-color: #808080 #fff #fff #808080; background: #c0c0c0; box-shadow: inset 1px 1px 0 #000;
+}
+#player .p-range::-webkit-slider-thumb {
+    -webkit-appearance: none; width: 10px; height: 18px; margin-top: -7px;
+    border: 0; background: #c0c0c0; box-shadow: var(--button-raised);
+}
+#player .p-range::-moz-range-track {
+    height: 4px; box-sizing: border-box; border: 1px solid;
+    border-color: #808080 #fff #fff #808080; background: #c0c0c0; box-shadow: inset 1px 1px 0 #000;
+}
+#player .p-range::-moz-range-thumb {
+    width: 10px; height: 18px; border: 0; border-radius: 0; background: #c0c0c0; box-shadow: var(--button-raised);
+}
+
+#player .win-titlebar-left { flex: 1; min-width: 0; }
+#player .win-title { overflow: hidden; white-space: nowrap; text-overflow: ellipsis; }
+
+/* ----- wide player ----- */
+#player .pw-body { flex: 1; min-height: 0; display: flex; align-items: center; gap: 6px; padding: 5px; }
+#player .pw-vis { flex: none; display: block; width: 400px; height: 108px; background: #000; box-shadow: var(--sunken); }
+#player .pw-side { flex: 1; min-width: 0; height: 108px; display: flex; flex-direction: column; justify-content: space-between; }
+#player .pw-side > .p-range { flex: none; }
+#player .pw-row { display: flex; align-items: center; gap: 6px; }
+
+#player .pw-time { flex: none; width: 130px; height: 26px; padding: 5px 6px; font-size: 12px; line-height: 16px; text-align: center; }
+#player .pw-vol { flex: none; font-size: 12px; margin-left: 6px; }
+
+#player .pw-btn { flex: 1; min-width: 0; height: 34px; padding: 0; font-size: 12px; }
+#player .pw-btn svg { display: block; fill: #000; pointer-events: none; }
+#player .pw-btn:active svg { transform: translate(1px, 1px); }
